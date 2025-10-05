@@ -2,6 +2,7 @@ from flask import Flask, render_template, send_file
 import os
 from . import database
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -10,7 +11,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    db, close = database.get_database("upkaar")
+    database.init_app(app)
 
     @app.route('/')
     def hello():
@@ -21,9 +22,9 @@ def create_app(test_config=None):
         return send_file("static/favicon.ico")
 
     @app.route('/db')
-    def db_():
-        data = db["users"].find()
-        return render_template("db.html", data = data)
-        
+    def db():
+        breakpoint()
+        data = database.get_db()["users"].find()
+        return render_template("db.html", data=data)
 
     return app
