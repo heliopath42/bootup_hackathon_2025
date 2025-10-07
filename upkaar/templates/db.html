@@ -4,9 +4,15 @@
         <title>TITLE</title>
     </head>
     <body>
-        {% for item in data %}
-            <li> {{ data }} </li>
+        <ol>
+        {% for item in data.to_list() %}
+            <li> <ul>
+                {% for i, j  in item.items() %}
+                <li> {{ i }}: {{ j }} </li>
+                {% endfor %} 
+            </ul> </li>
         {% endfor %}
+        </ol>
         <br>
     </body>
 </html>

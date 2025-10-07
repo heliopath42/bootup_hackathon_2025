@@ -49,66 +49,68 @@ def stop_mongod(proc):
 @click.command("init-db")
 def init_db():
     db = get_db("upkaar")
-    db.create_collection(
-        "users",
-        validator={
-            "$jsonSchema": {
-                "bsonType": "object",
-                "required": ["username", "password_salt"],
-                "properties": {
-                    "username": {
-                        "bsonType": "string",
-                        "description": "required, non-empty string"
-                    },
-                    "password_salt": {
-                        "bsonType": "string",
-                        "description": "SHA 256 hash of the password"
-                    },
-                    "requests_created": {
-                        "bsonType": "array",
-                        "description": "Array of uuids"
-                    },
-                    "requests_ongoing": {
-                        "bsonType": "array",
-                        "description": "Array of uuids"
-                    }
+    if "users" not in db.list_collection_names():
+        db.create_collection(
+            "users",
+            validator={
+                "$jsonSchema": {
+                    "bsonType": "object",
+                    "required": ["username", "password_salt"],
+                    "properties": {
+                        "username": {
+                            "bsonType": "string",
+                            "description": "required, non-empty string"
+                        },
+                        "password_salt": {
+                            "bsonType": "string",
+                            "description": "SHA 256 hash of the password"
+                        },
+                        "requests_created": {
+                            "bsonType": "array",
+                            "description": "Array of uuids"
+                        },
+                        "requests_ongoing": {
+                            "bsonType": "array",
+                            "description": "Array of uuids"
+                        }
 
-                }
-            }
-        },
-        validationLevel="strict",
-        validationAction="error"
-    )
-
-    db.create_collection(
-        "user_request",
-        validator={
-            "$jsonSchema": {
-                "bsonType": "object",
-                "required": ["owner", "r_uuid"],
-                "properties": {
-                    "owner": {
-                        "bsonType": "string",
-                        "description": "required, non-empty string"
-                    },
-                    "r_uuid": {
-                        "bsonType": "string",
-                        "description": "required UUID v4"
-                    },
-                    "created_timestamp": {
-                        "bsonType": "date",
-                        "description": "timestamp of creation"
-                    },
-                    "reward": {
-                        "bsonType": "string",
-                        "description": "Reward set by the user",
                     }
                 }
-            }
-        },
-        validationLevel="strict",
-        validationAction="error"
-    )
+            },
+            validationLevel="strict",
+            validationAction="error"
+        )
+
+    if "user_request" not in db.list_collection_names():
+        db.create_collection(
+            "user_request",
+            validator={
+                "$jsonSchema": {
+                    "bsonType": "object",
+                    "required": ["owner", "r_uuid"],
+                    "properties": {
+                        "owner": {
+                            "bsonType": "string",
+                            "description": "required, non-empty string"
+                        },
+                        "r_uuid": {
+                            "bsonType": "string",
+                            "description": "required UUID v4"
+                        },
+                        "created_timestamp": {
+                            "bsonType": "date",
+                            "description": "timestamp of creation"
+                        },
+                        "reward": {
+                            "bsonType": "string",
+                            "description": "Reward set by the user",
+                        }
+                    }
+                }
+            },
+            validationLevel="strict",
+            validationAction="error"
+        )
 
 
 def init_app(app: Flask):
